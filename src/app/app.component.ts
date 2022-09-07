@@ -27,6 +27,9 @@ export class AppComponent implements OnInit{
   
   displayedAuctionColumns: string[] = ['auctionId', 'auctionName', 'currentBid', 'bidForm'];
 
+  rowStyle = 'row-default';
+  auctionClicked: number | undefined;
+
   constructor(private api: ApiService) {}
 
   ngOnInit() {
@@ -44,7 +47,9 @@ export class AppComponent implements OnInit{
 
   async PlaceNewBid(id: number, newBid: string)
   {
-    console.log("button clicked. auction id " + id + " new Bid " + newBid);
+
+    this.auctionClicked = id;
+    console.log("button clicked. auction id " + id + " new Bid " + newBid + " index " + this.auctionClicked);
 
     this.api_request_body.auctionId = id;
     this.api_request_body.bidValue = Number(newBid);
