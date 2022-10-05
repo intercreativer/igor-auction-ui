@@ -78,7 +78,7 @@
             "development": {
               "browserTarget": "igor-auction-ui:build:development",
               "ssl": true,
-              "port": 4888
+              "port": 4889
             }
           },
           "defaultConfiguration": "development"

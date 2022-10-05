@@ -69,7 +69,6 @@ export class AppComponent implements OnInit{
       if (updateItem != null) {
         updateItem.currentBid = newBidValue;
       }
-      console.log(this.myAuctions);
   }
 
   private getAuctions() {
@@ -95,7 +94,7 @@ export class AppComponent implements OnInit{
       bidValue: parseInt(newBid)
     })
     
-    this.updateAuctionItem(id, Number(newBid));
+    // this.updateAuctionItem(id, Number(newBid));
     //this.getAuctions();
   }
 }

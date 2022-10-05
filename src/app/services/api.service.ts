@@ -26,8 +26,6 @@ export class ApiService {
 
   placeNewBid(request: any) {
     const params = request;
-    console.log('post Params');
-    console.log(params);
     return this.http.post<Auction>(this.newBidUrl, params);
   }
 }
