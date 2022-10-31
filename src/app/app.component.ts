@@ -31,6 +31,9 @@ export class AppComponent implements OnInit{
   rowStyle = 'row-default';
   auctionClicked: number | undefined;
 
+  startTime : number = 0;
+  endTime : number = 0;
+
   public hubConnection: signalR.HubConnection | undefined;
 
   constructor(private api: ApiService) {}
@@ -48,6 +51,9 @@ export class AppComponent implements OnInit{
                             .build();
 
     this.hubConnection.on("ReceiveNewBid", ({ auctionId, bidValue}) => {
+      console.log('endTime',Date.now());
+      this.endTime = Date.now();
+      console.log('timelapse ' + (this.endTime - this.startTime));
 
       //update auction array item
       this.updateAuctionItem(auctionId, bidValue);
@@ -82,11 +88,14 @@ export class AppComponent implements OnInit{
 
   async PlaceNewBid(id: number, newBid: string)
   {
+ 
     this.api_request_body.auctionId = id;
     this.api_request_body.bidValue = Number(newBid);
 
     const bid = await this.api.placeNewBid(this.api_request_body).toPromise();
-    console.log(bid);
+    
+    console.log('startTime',Date.now());
+    this.startTime = Date.now();
 
     //calling notifyNewBid
     await this.hubConnection?.invoke("NotifyNewBid", {
