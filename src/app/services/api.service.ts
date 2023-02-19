@@ -16,6 +16,7 @@ export class ApiService {
   
   getAuctionUrl: string = "https://localhost:7058/api/Auctions/GetAuctions";
   newBidUrl: string = "https://localhost:7058/api/Auctions/PlaceBid";
+  notifyAdhocUrl: string = "http://localhost:7174/api/NotifyAdhoc";
 
   constructor(private http: HttpClient) { }
 
@@ -27,5 +28,10 @@ export class ApiService {
   placeNewBid(request: any) {
     const params = request;
     return this.http.post<Auction>(this.newBidUrl, params);
+  }
+
+  notifyAdhoc(request: any) {
+    const params = request;
+    return this.http.post<Auction>(this.notifyAdhocUrl, params);
   }
 }

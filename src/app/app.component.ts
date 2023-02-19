@@ -47,7 +47,11 @@ export class AppComponent implements OnInit{
   
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-                            .withUrl('https://localhost:7058/auctionhub')
+                            // .withUrl('https://localhost:7058/auctionhub')
+                            // .withUrl('https://localhost:44381/adhochub')
+                             .withUrl('https://flex-user-authorization-service-flex-build.paas-dev-njrar-02.ams1907.com/adhochub')
+                            //.withUrl('http://localhost:7174/api')
+                            //.withUrl('https://worldport-signalr-functions-eastus-dev.azurewebsites.net/api/')
                             .build();
 
     this.hubConnection.on("ReceiveNewBid", ({ auctionId, bidValue}) => {
@@ -62,6 +66,14 @@ export class AppComponent implements OnInit{
       this.auctionClicked =  auctionId;
 
       setTimeout(() => this.auctionClicked =  0, 2000);
+    }) 
+
+    this.hubConnection.on("ReceiveAdhoc", () => {
+      console.log('Message Received',Date.now());
+      console.log('endTime',Date.now());
+      this.endTime = Date.now();
+      console.log('timelapse ' + (this.endTime - this.startTime));
+
     }) 
 
     this.hubConnection
@@ -98,12 +110,14 @@ export class AppComponent implements OnInit{
     this.startTime = Date.now();
 
     //calling notifyNewBid
-    await this.hubConnection?.invoke("NotifyNewBid", {
-      auctionId: id,
-      bidValue: parseInt(newBid)
-    })
+    // await this.hubConnection?.invoke("NotifyNewBid", {
+    //   auctionId: id,
+    //   bidValue: parseInt(newBid)
+    // })
     
-    // this.updateAuctionItem(id, Number(newBid));
-    //this.getAuctions();
+    //await this.hubConnection?.invoke("NotifyAdhoc");
+
+    await this.api.notifyAdhoc(this.api_request_body).toPromise();
+    
   }
 }
