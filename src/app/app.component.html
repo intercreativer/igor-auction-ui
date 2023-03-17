@@ -365,7 +365,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedAuctionColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedAuctionColumns;" [class.animate-highlight]="auctionClicked === row.auctionId"></tr>
     </table>    
-
+    <button mat-raised-button (click)="PlaceNewBid(1, '55')">Bid</button>
 </div>
 
 <router-outlet></router-outlet>

@@ -158,7 +158,7 @@ export class AppComponent implements OnInit{
     this.flexops_request_body.IsPrivate = false;
 
 
-    const bid = await this.api.placeNewBid(this.api_request_body).toPromise();
+    // const bid = await this.api.placeNewBid(this.api_request_body).toPromise();
     
     this.startTime = Date.now();
     console.log('Sending the message', this.startTime);
