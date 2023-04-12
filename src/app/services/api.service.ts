@@ -18,7 +18,7 @@ export class ApiService {
   getAuctionUrl: string = "https://localhost:7058/api/Auctions/GetAuctions";
   newBidUrl: string = "https://localhost:7058/api/Auctions/PlaceBid";
   notifyAdhocUrl: string = "http://localhost:7174/api/NotifyAdhoc";
-  worldPortNotificationUrl: string = "https://worldport-signalr-functions-eastus-dev.azurewebsites.net/api/broadcast";
+  worldPortSignalRUrl: string = 'https://worldport-signalr-functions-eastus-dev.azurewebsites.net/api/'
 
   constructor(private http: HttpClient) { }
 
@@ -39,7 +39,7 @@ export class ApiService {
 
   sendSignalRNotification(request: any) {
     const params = request;
-    return this.http.post<any>(this.worldPortNotificationUrl, params, {
+    return this.http.post<any>(this.worldPortSignalRUrl + 'broadcast', params, {
       headers: this.getCustomBroadcastHeaders()
     });
   }
@@ -53,7 +53,7 @@ export class ApiService {
   }
 
   getConnectionInfo(): Observable<SignalRConnectionInfo> {
-    const requestUrl = 'https://worldport-signalr-functions-eastus-dev.azurewebsites.net/api/negotiate';
+    const requestUrl = this.worldPortSignalRUrl + 'negotiate';
     console.log('requestURL ' + requestUrl);
     return this.http.post<SignalRConnectionInfo>(requestUrl, null, {
       headers: this.getCustomHeaders()

@@ -18,9 +18,9 @@ export interface jsonbody {
   bidValue: number;
 }
 
-export interface flexOpsJsonBody {
+export interface AzureSignalRJsonBody {
   Sender: string;
-  MessageText: string;
+  Text: string;
   GroupName: string;
   Recipient: string;
   ConnectionId: string;
@@ -41,7 +41,9 @@ export class AppComponent implements OnInit{
   response = [];
   myAuctions: myAuction[] = [];
   api_request_body: jsonbody = <jsonbody>{};
-  flexops_request_body: flexOpsJsonBody = <flexOpsJsonBody>{};
+  newBidReceived: jsonbody = <jsonbody>{};
+  flexops_request_body: AzureSignalRJsonBody = <AzureSignalRJsonBody>{};
+  receivedMessage: AzureSignalRJsonBody = <AzureSignalRJsonBody>{};
 
   displayedAuctionColumns: string[] = ['auctionId', 'auctionName', 'currentBid', 'bidForm'];
   rowStyle = 'row-default';
@@ -108,14 +110,23 @@ export class AppComponent implements OnInit{
 
     }) 
 
-    this.hubConnection.on("newMessage", ({Message}) => {
-      // console.log('Message Received', Message);
+    this.hubConnection.on("newMessage", (message) => {
       this.endTime = Date.now();
-      console.log('Message Received', Message, this.endTime);
-      
+
+      this.receivedMessage = JSON.parse(JSON.stringify(message));
+      this.newBidReceived = JSON.parse(this.receivedMessage.Text);
+      console.log('Message Received', this.receivedMessage, this.endTime);
+      console.log('Text Received', this.newBidReceived);
       console.log('timelapse ' + (this.endTime - this.startTime));
 
-    })     
+      //update auction array item
+      this.updateAuctionItem(this.newBidReceived.auctionId, this.newBidReceived.bidValue);
+
+      //Highlight the record of the table that got updated
+      this.auctionClicked =  this.newBidReceived.auctionId;
+
+      setTimeout(() => this.auctionClicked =  0, 2000);      
+    })  
 
     this.hubConnection
       .start()
@@ -147,18 +158,19 @@ export class AppComponent implements OnInit{
   async PlaceNewBid(id: number, newBid: string)
   {
  
-    // this.api_request_body.auctionId = id;
-    // this.api_request_body.bidValue = Number(newBid);
+     this.api_request_body.auctionId = id;
+     this.api_request_body.bidValue = Number(newBid);
 
     this.flexops_request_body.Sender = "5915087";
-    this.flexops_request_body.MessageText = "ping";
+    //this.flexops_request_body.Text = "ping";
+    this.flexops_request_body.Text = JSON.stringify(this.api_request_body);    
     this.flexops_request_body.GroupName = "none";
     this.flexops_request_body.Recipient = "none";
     this.flexops_request_body.ConnectionId = "none";
     this.flexops_request_body.IsPrivate = false;
 
 
-    // const bid = await this.api.placeNewBid(this.api_request_body).toPromise();
+    const bid = await this.api.placeNewBid(this.api_request_body).toPromise();
     
     this.startTime = Date.now();
     console.log('Sending the message', this.startTime);
